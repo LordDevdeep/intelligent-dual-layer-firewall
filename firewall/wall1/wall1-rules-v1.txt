@@ -1,0 +1,4 @@
+-N WALL1
+-A WALL1 -m conntrack --ctstate INVALID -j DROP
+-A WALL1 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A WALL1 -j RETURN
