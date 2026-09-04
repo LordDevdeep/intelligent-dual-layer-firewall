@@ -5,3 +5,7 @@ __pycache__/
 .env
 .venv/
 venv/
+#Resolute runtime/generated files
+detection/*.json
+detection/*.pkl
+
