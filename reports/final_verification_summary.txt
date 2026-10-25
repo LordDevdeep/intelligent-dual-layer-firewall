@@ -1,0 +1,63 @@
+RESOLUTE — FINAL VERIFICATION SUMMARY
+=====================================
+
+1. MACHINE LEARNING
+-------------------
+Random Forest evaluation on the prepared CIC-IDS2017 test dataset
+completed successfully.
+
+Reported dataset metrics:
+- Test samples: 29,999
+- Model input features: 78
+- Accuracy: 99.80%
+- Precision: 99.90%
+- Recall: 99.69%
+- F1-score: 99.80%
+- ROC-AUC: 1.0000
+
+These metrics describe the prepared test dataset and do not establish
+equivalent performance on live network traffic.
+
+2. LIVE DETECTION AND DECISIONS
+-------------------------------
+- Live capture processed five HTTP flows in the lab.
+- The observed flows were classified as BENIGN.
+- The decision engine converted the observed benign flows into ALLOW
+  decisions.
+- The Phase 6 enforcer read the connected decision log.
+- The benign-flow dry-run returned zero block candidates.
+
+3. FIREWALL CONFIGURATION
+-------------------------
+- WALL1 exists and is connected to FORWARD.
+- WALL2 exists and is connected to INPUT.
+- Existing WALL1 rules were preserved during the controlled test.
+- A controlled DROP rule for 192.0.2.10 was added to WALL2.
+- The rule was verified, removed, and verified absent afterward.
+- The Phase 6 controlled enforcer recognized a BLOCK_CANDIDATE fixture
+  in dry-run mode without applying a rule.
+
+4. SYNTAX CHECK
+---------------
+Python syntax compilation for the src and detection directories passed.
+
+5. KNOWN LIMITATIONS
+--------------------
+- Controlled live attack detection has not been verified end to end.
+- The complete live detection-to-automatic-blocking workflow has not
+  been demonstrated end to end.
+- The complete honeypot-to-attack-intelligence-to-adaptive-defense
+  workflow has not been demonstrated end to end.
+- Integrated rollback automation and connectivity recovery have not
+  been fully validated.
+- Persistence across reboot and production suitability have not been
+  established.
+
+6. SAFETY
+---------
+RESOLUTE is an educational research prototype, not a production-ready
+firewall. Automated enforcement should remain in dry-run mode until
+end-to-end detection, decision safeguards, rollback behavior, and
+connectivity recovery have been tested in an authorized lab.
+
+END OF SUMMARY

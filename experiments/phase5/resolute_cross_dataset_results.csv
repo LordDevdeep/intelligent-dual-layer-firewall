@@ -1,0 +1,4 @@
+Dataset,Evaluation,Samples,Accuracy,Precision,Recall,F1,Observation
+CIC-IDS2017,Held-out test,29999,0.997967,0.999,0.996933,0.997967,Strong binary detection on CIC-IDS2017
+UWF-ZeekData24,Held-out test,946,0.996829,0.993697,1.0,0.996839,Strong detection on UWF flow data
+BigFlow-NIDS,Held-out test,15000,0.845733,0.879094,0.801733,0.83834,Lower overall performance; scanning detection is weaker

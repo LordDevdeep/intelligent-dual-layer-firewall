@@ -1,0 +1,20 @@
+{
+    "timestamp": "2026-09-04T12:37:47.334254",
+    "source_ip": "10.10.10.2",
+    "traffic": {
+        "packets": 50,
+        "bytes": 4900,
+        "tcp": 0,
+        "udp": 0,
+        "icmp": 50
+    },
+    "ml_prediction": "SUSPICIOUS",
+    "ml_confidence": 1.0,
+    "attack_category": "Excessive ICMP Activity",
+    "threat_status": "VALIDATED_THREAT",
+    "validation": {
+        "validated": true,
+        "validated_at": "2026-09-04T12:43:24.979572",
+        "reason": "All validation criteria satisfied"
+    }
+}

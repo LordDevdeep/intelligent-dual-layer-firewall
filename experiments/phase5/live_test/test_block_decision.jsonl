@@ -1,0 +1,1 @@
+{"timestamp":"2026-09-25T13:00:00","source_ip":"192.0.2.10","source_port":4444,"destination_ip":"192.0.2.20","destination_port":443,"protocol":6,"prediction":1,"label":"ATTACK","confidence":0.95,"probability_benign":0.05,"probability_attack":0.95,"feature_count":78,"decision":"BLOCK_CANDIDATE","decision_reason":"Controlled Phase 5 enforcement test"}

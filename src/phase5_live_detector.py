@@ -1,0 +1,120 @@
+import json
+import time
+from datetime import datetime
+
+import joblib
+from scapy.all import AsyncSniffer
+from cicflowmeter.flow_session import FlowSession
+
+from cic_feature_adapter import adapt_cicflow_features
+
+
+INTERFACE = "enp0s8"
+CAPTURE_SECONDS = 30
+
+MODEL_PATH = "/home/lorddevdeep/resolute/models/resolute_random_forest.joblib"
+LOG_PATH = "/home/lorddevdeep/resolute/experiments/phase5/live_test/ml_detection_log.jsonl"
+
+
+def main():
+    print("=" * 60)
+    print("RESOLUTE PHASE 5 - LIVE ML DETECTOR")
+    print("MODE: DRY RUN - NO FIREWALL ACTION")
+    print("=" * 60)
+    print(f"Interface: {INTERFACE}")
+    print(f"Capture time: {CAPTURE_SECONDS} seconds")
+    print()
+
+    model = joblib.load(MODEL_PATH)
+
+    session = FlowSession(
+        output_mode="csv",
+        output="/home/lorddevdeep/resolute/experiments/phase5/live_test/detector_flows.csv",
+        fields=None,
+        verbose=False,
+    )
+
+    sniffer = AsyncSniffer(
+        iface=INTERFACE,
+        filter="ip and (tcp or udp)",
+        prn=session.process,
+        store=False,
+    )
+
+    print("Starting packet capture...")
+    sniffer.start()
+
+    try:
+        time.sleep(CAPTURE_SECONDS)
+    finally:
+        sniffer.stop()
+
+    # Save flow objects before flushing clears the session.
+    flows = list(session.get_flows())
+
+    # Write remaining captured flows to the CSV output.
+    session.flush_flows()
+
+    print()
+    print(f"Completed flows: {len(flows)}")
+    print()
+
+    if not flows:
+        print("No completed flows captured.")
+        return
+
+    with open(LOG_PATH, "w") as log_file:
+
+        for number, flow in enumerate(flows, start=1):
+
+            flow_data = flow.get_data()
+
+            try:
+                features = adapt_cicflow_features(flow_data)
+
+                prediction = int(model.predict(features)[0])
+                probabilities = model.predict_proba(features)[0]
+
+                confidence = float(max(probabilities))
+
+                label = "ATTACK" if prediction == 1 else "BENIGN"
+
+                result = {
+                    "timestamp": datetime.now().isoformat(),
+                    "source_ip": flow_data.get("src_ip"),
+                    "source_port": flow_data.get("src_port"),
+                    "destination_ip": flow_data.get("dst_ip"),
+                    "destination_port": flow_data.get("dst_port"),
+                    "protocol": flow_data.get("protocol"),
+                    "prediction": prediction,
+                    "label": label,
+                    "confidence": confidence,
+                    "probability_benign": float(probabilities[0]),
+                    "probability_attack": float(probabilities[1]),
+                    "feature_count": int(features.shape[1]),
+                }
+
+                log_file.write(json.dumps(result) + "\n")
+
+                print(f"Flow {number}")
+                print(
+                    f"  {result['source_ip']}:{result['source_port']}"
+                    f" -> "
+                    f"{result['destination_ip']}:{result['destination_port']}"
+                )
+                print(f"  Prediction : {label}")
+                print(f"  Confidence : {confidence:.4f}")
+                print(f"  Features   : {features.shape[1]}")
+                print()
+
+            except Exception as error:
+                print(f"Flow {number}: ERROR - {error}")
+
+    print("=" * 60)
+    print("DRY-RUN DETECTION COMPLETE")
+    print(f"Log: {LOG_PATH}")
+    print("=" * 60)
+
+
+if __name__ == "__main__":
+    main()
