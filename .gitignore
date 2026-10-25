@@ -13,3 +13,6 @@ detection/*.pkl
 # Large research datasets - keep locally, do not push to GitHub
 datasets/bigflow_nids/BigFlow-NIDS-V2-Merged-Parquet.zip
 .gitignore.backup
+
+# Large research datasets — keep locally, do not push to GitHub
+datasets/
