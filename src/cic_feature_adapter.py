@@ -2,7 +2,7 @@ import joblib
 import pandas as pd
 from pathlib import Path
 
-MODEL_PATH = "/home/lorddevdeep/resolute/models/resolute_random_forest.joblib"
+MODEL_PATH = Path(__file__).resolve().parent.parent / "models" / "resolute_random_forest.joblib"
 
 
 def adapt_cicflow_features(flow_data):
